@@ -7,6 +7,15 @@
       },
       "location": {
         "value": "${AZURE_LOCATION}"
+      },
+      "azureOpenAiEndpoint": {
+        "value": "${AZURE_OPENAI_ENDPOINT}"
+      },
+      "azureOpenAiApiKey": {
+        "value": "${AZURE_OPENAI_API_KEY}"
+      },
+      "azureOpenAiDeployment": {
+        "value": "${AZURE_OPENAI_DEPLOYMENT}"
       }
     }
   }

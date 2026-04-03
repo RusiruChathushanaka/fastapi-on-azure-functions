@@ -9,6 +9,16 @@ param name string
 @description('Primary location for all resources')
 param location string
 
+@description('Azure OpenAI endpoint URL')
+param azureOpenAiEndpoint string
+
+@description('Azure OpenAI deployment model name')
+param azureOpenAiDeployment string = 'gpt-5.4-nano'
+
+@description('Azure OpenAI API key')
+@secure()
+param azureOpenAiApiKey string
+
 var resourceToken = toLower(uniqueString(subscription().id, name, location))
 var tags = { 'azd-env-name': name }
 
@@ -66,6 +76,9 @@ module functionApp 'core/host/functions.bicep' = {
     alwaysOn: false
     appSettings: {
       AzureWebJobsFeatureFlags: 'EnableWorkerIndexing'
+      AZURE_OPENAI_ENDPOINT: azureOpenAiEndpoint
+      AZURE_OPENAI_API_KEY: azureOpenAiApiKey
+      AZURE_OPENAI_DEPLOYMENT: azureOpenAiDeployment
     }
     applicationInsightsName: monitoring.outputs.applicationInsightsName
     appServicePlanId: appServicePlan.outputs.id
