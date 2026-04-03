@@ -2,8 +2,8 @@ import os
 import azure.functions as func
 import fastapi
 from openai import OpenAI
-from pydantic import BaseModel
-from typing import List
+from pydantic import BaseModel, model_validator
+from typing import List, Literal, Optional
 
 app = fastapi.FastAPI()
 
@@ -19,12 +19,20 @@ def get_openai_client() -> OpenAI:
 
 
 class ChatMessage(BaseModel):
-    role: str
+    role: Literal["system", "assistant", "user", "tool", "developer"]
     content: str
 
 
 class ChatRequest(BaseModel):
-    messages: List[ChatMessage]
+    messages: Optional[List[ChatMessage]] = None
+    message: Optional[str] = None
+    system_prompt: Optional[str] = None
+
+    @model_validator(mode="after")
+    def check_at_least_one(self) -> "ChatRequest":
+        if not self.messages and not self.message:
+            raise ValueError("Provide either 'message' (string) or 'messages' (list of role/content objects).")
+        return self
 
 
 class ChatResponse(BaseModel):
@@ -51,10 +59,19 @@ async def chat(request: ChatRequest):
     deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT", "gpt-5.4-nano")
     client = get_openai_client()
 
+    if request.message:
+        messages = [{"role": "user", "content": request.message}]
+    else:
+        messages = [{"role": m.role, "content": m.content} for m in request.messages]
+
+    if request.system_prompt:
+        messages.insert(0, {"role": "system", "content": request.system_prompt})
+
     completion = client.chat.completions.create(
         model=deployment,
-        messages=[{"role": m.role, "content": m.content} for m in request.messages],
+        messages=messages,
     )
 
     message = completion.choices[0].message
     return ChatResponse(role=message.role, content=message.content)
+
