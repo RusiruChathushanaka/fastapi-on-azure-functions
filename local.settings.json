@@ -5,7 +5,7 @@
     "FUNCTIONS_WORKER_RUNTIME": "python",
     "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
     "AZURE_OPENAI_ENDPOINT": "https://openaifastapiapp.openai.azure.com/openai/v1",
-    "AZURE_OPENAI_API_KEY": "CcIIV7rszBgJ3P0bD4oLiu1vpw6Q5Ixi1N74JMb4oSO0d3YgQNbzJQQJ99CDACHYHv6XJ3w3AAABACOGpzkN",
+    "AZURE_OPENAI_API_KEY": "CcIIV7rszBgJ3P0bD4oLiu1vpw6Q5Ixi1N74JergwhtdrhdrtdQJ99CDACHYHv6XJ3w3AAABACOGpzkN",
     "AZURE_OPENAI_DEPLOYMENT": "gpt-5.4-nano"
   }
 }
